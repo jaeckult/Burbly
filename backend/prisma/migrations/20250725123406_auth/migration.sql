@@ -1,0 +1,10 @@
+-- CreateTable
+CREATE TABLE "OTP" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "otp" TEXT NOT NULL,
+    "expiresAt" DATETIME NOT NULL,
+    "verified" BOOLEAN NOT NULL DEFAULT false,
+    "userId" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "OTP_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
