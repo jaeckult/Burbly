@@ -7,9 +7,9 @@ const prisma = new PrismaClient();
 const bcrypt = require('bcrypt');
 
 verifyOtpRouter.post('/', async (req, res) => {
-  const { otp, username, email, phoneNumber } = req.body;
+  const { otp, username, email } = req.body;
 
-  if (!otp || (!username && !email && !phoneNumber)) {
+  if (!otp || (!username && !email )) {
     return res.status(400).json({ error: 'OTP and one of username, email, or phone number are required' });
   }
 
@@ -19,8 +19,7 @@ verifyOtpRouter.post('/', async (req, res) => {
       where: {
         OR: [
           username ? { username } : undefined,
-          email ? { email } : undefined,
-          phoneNumber ? { phoneNumber } : undefined
+          email ? { email } : undefined
         ].filter(Boolean),
         isVerified: false
       }

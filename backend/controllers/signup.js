@@ -4,6 +4,8 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const { PrismaClient } = require('@prisma/client');
 const twilioClient = require('../utils/twilio');
+const sgMail = require('@sendgrid/mail')
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
 const signupRouter = express.Router();
 const prisma = new PrismaClient();
@@ -11,10 +13,12 @@ const prisma = new PrismaClient();
 signupRouter.post('/', async (req, res) => {
     // console.log(Object.keys(prisma));
 
-  const { username, phoneNumber, email, password } = req.body;
+  const { username, email, password } = req.body;
+  console.log("you are here");
+  
 
-  if (!username || !phoneNumber || !email || !password) {
-    return res.status(400).json({ error: 'Username, phone number, email, and password are required' });
+  if (!username  || !email || !password) {
+    return res.status(400).json({ error: 'Username email, and password are required' });
   }
 
   try {
@@ -23,7 +27,6 @@ signupRouter.post('/', async (req, res) => {
       where: {
         OR: [
           { username },
-          { phoneNumber },
           { email }
         ]
       }
@@ -34,7 +37,7 @@ signupRouter.post('/', async (req, res) => {
     const passwordHash = await bcrypt.hash(password, 10);
     if (existingUser) {
       if (existingUser.isVerified) {
-        return res.status(400).json({ error: 'Username, phone number, or email already in use and verified' });
+        return res.status(400).json({ error: 'Username, or email already in use and verified' });
       }
       // Update passwordHash in case user wants to change password before verifying
       user = await prisma.user.update({
@@ -49,7 +52,6 @@ signupRouter.post('/', async (req, res) => {
       user = await prisma.user.create({
         data: {
           username,
-          phoneNumber,
           email,
           passwordHash,
           isVerified: false
@@ -81,12 +83,21 @@ signupRouter.post('/', async (req, res) => {
 
     console.log('created OTP for user:', user.id, otp);
 
-    // Send OTP via SMS
-    await twilioClient.messages.create({
-      body: `Your verification code is: ${otp}`,
-      from: process.env.TWILIO_PHONE_NUMBER,
-      to: phoneNumber
-    });
+    const msg = {
+  to: email, // Change to your recipient
+  from: 'yitbarek.alemu-ug@aau.edu.com', // Change to your verified sender
+  subject: 'Sending with SendGrid is Fun',
+  text: 'here is your OTP: ' + otp,
+  html: '<strong>here is your otp</strong>',
+}
+sgMail
+  .send(msg)
+  .then(() => {
+    console.log('Email sent')
+  })
+  .catch((error) => {
+    console.error(error)
+  })
 
     return res.status(200).json({
       id: user.id,

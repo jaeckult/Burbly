@@ -58,7 +58,7 @@ async function googleAuth(req, res) {
     }
 
     // Issue JWT (or session)
-    const token = jwt.sign({ userId: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '7d' });
+    const token = jwt.sign({ userId: user.id, email: user.email }, process.env.SECRET, { expiresIn: '7d' });
 
     res.json({
       token,
