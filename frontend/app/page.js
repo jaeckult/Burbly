@@ -1,124 +1,99 @@
-'use client';
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { logoutUser } from '../api/auth';
+"use client";
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { getCurrentUser } from '../api/auth';
 
 export default function Home() {
-  const router = useRouter();
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is authenticated
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-      router.push('/login');
-      return;
+    async function fetchUser() {
+      const currentUser = await getCurrentUser();
+      setUser(currentUser);
     }
-
-    // In a real app, you'd verify the token with your backend
-    // For now, we'll just set a mock user
-    setUser({ username: 'User', email: 'user@example.com' });
-    setLoading(false);
-  }, [router]);
-
-  const handleLogout = async () => {
-    try {
-      await logoutUser();
-      localStorage.removeItem('authToken');
-      router.push('/login');
-    } catch (error) {
-      console.error('Logout failed:', error);
-      // Still remove token and redirect
-      localStorage.removeItem('authToken');
-      router.push('/login');
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
+    fetchUser();
+  }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-gray-900">Burbly</h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-700">
-                Welcome, {user?.username || 'User'}!
-              </span>
-              <button
-                onClick={handleLogout}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
-              >
-                Logout
-              </button>
-            </div>
-          </div>
-        </div>
+      <header className="flex justify-between items-center py-6 px-8 bg-white shadow-md">
+        <h1 className="text-2xl font-bold text-blue-600">Burbly</h1>
+        <nav className="space-x-4">
+          {user ? (
+            <span className="text-gray-700 font-medium">Hello, {user.username}!</span>
+          ) : (
+            <>
+              <Link href="/login" className="text-gray-700 hover:text-blue-600 font-medium">
+                Login
+              </Link>
+              <Link href="/signup" className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
+                Sign Up
+              </Link>
+            </>
+          )}
+        </nav>
       </header>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">
-          <div className="border-4 border-dashed border-gray-200 rounded-lg h-96 flex items-center justify-center">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                Welcome to Burbly!
-              </h2>
-              <p className="text-gray-600 mb-6">
-                Your account has been successfully verified and you're now logged in.
-              </p>
-              <div className="space-y-4">
-                <div className="bg-green-50 border border-green-200 rounded-md p-4">
-                  <div className="flex">
-                    <div className="flex-shrink-0">
-                      <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    <div className="ml-3">
-                      <p className="text-sm font-medium text-green-800">
-                        Authentication Successful
-                      </p>
-                      <p className="text-sm text-green-700 mt-1">
-                        You can now access all features of Burbly.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
-                  <div className="flex">
-                    <div className="flex-shrink-0">
-                      <svg className="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    <div className="ml-3">
-                      <p className="text-sm font-medium text-blue-800">
-                        Next Steps
-                      </p>
-                      <p className="text-sm text-blue-700 mt-1">
-                        Start exploring Burbly's features and connect with others!
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+      {/* Hero Section */}
+      <main className="flex-grow flex flex-col items-center justify-center text-center px-6">
+        <motion.h2
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-4xl font-extrabold text-gray-900 mb-4"
+        >
+          Your Daily Entertainment Planner
+        </motion.h2>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+          className="max-w-lg text-gray-600 leading-relaxed mb-8"
+        >
+          Burbly helps you discover fun activities, events, and places tailored to your tastes every day. 
+          From local events to personalized recommendations, we've got your next adventure covered.
+        </motion.p>
+        <div className="space-x-4">
+          <Link href="/signup" className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition">
+            Get Started
+          </Link>
+          <Link href="/learn-more" className="text-blue-600 font-medium hover:underline">
+            Learn More
+          </Link>
         </div>
       </main>
+
+      {/* Features Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-4xl mx-auto px-6">
+          <h3 className="text-3xl font-bold text-gray-900 text-center mb-10">Why Choose Burbly?</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <motion.div whileHover={{ scale: 1.05 }} className="p-6 bg-gray-50 rounded-xl shadow-lg">
+              <h4 className="text-xl font-semibold mb-2 text-gray-900">Personalized Picks</h4>
+              <p className="text-gray-600">Get recommendations tailored to your interests and past activities.</p>
+            </motion.div>
+
+            <motion.div whileHover={{ scale: 1.05 }} className="p-6 bg-gray-50 rounded-xl shadow-lg">
+              <h4 className="text-xl font-semibold mb-2 text-gray-900">Local Events</h4>
+              <p className="text-gray-600">Discover nearby events, concerts, and meetups happening today.</p>
+            </motion.div>
+
+            <motion.div whileHover={{ scale: 1.05 }} className="p-6 bg-gray-50 rounded-xl shadow-lg">
+              <h4 className="text-xl font-semibold mb-2 text-gray-900">Plan & Share</h4>
+              <p className="text-gray-600">Organize your daily plans and share fun activities with friends.</p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-4 text-center text-gray-500 text-sm bg-gray-50">
+        © {new Date().getFullYear()} Burbly. All rights reserved.
+      </footer>
     </div>
   );
-} 
+}
+
+// Ensure you have installed framer-motion: npm install framer-motion

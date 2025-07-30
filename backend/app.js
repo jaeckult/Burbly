@@ -34,7 +34,9 @@ app.use(getTokenFrom);
 app.use('/api/users', userRouter);
 app.use('/api/login', loginRouter);
 app.use('/api/signup', signupRouter);
+app.use('/api/logout', require('./controllers/logout'));
 app.use('/api/verify-otp', verifyOtpRouter);
+app.use('/api/me', require('./controllers/me'));
 app.post('/api/auth/google', googleAuth);
 
 app.get('/', (req, res) => {

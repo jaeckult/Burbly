@@ -5,9 +5,15 @@ const prisma = new PrismaClient();
 
 async function seed() {
     try {
-        // Delete all existing users
+        // Delete dependent records first
+        await prisma.account.deleteMany();
+        await prisma.session.deleteMany();
+        await prisma.oTP.deleteMany();
+        await prisma.googleUser.deleteMany();
+
+        // Now delete users
         await prisma.user.deleteMany();
-        console.log('Deleted all existing users');
+        console.log('Deleted all existing users and related records');
 
         // // Define new users to seed
         // const users = [

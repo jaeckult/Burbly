@@ -7,6 +7,8 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // POST /api/auth/google
 async function googleAuth(req, res) {
+  console.log("endpoint hit");
+  
   const { idToken } = req.body;
   if (!idToken) return res.status(400).json({ error: 'No ID token provided' });
 
@@ -22,12 +24,14 @@ async function googleAuth(req, res) {
     // Find or create user
     let user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
+      console.log("Creating new user");
       user = await prisma.user.create({
         data: {
           email,
           username: email, // or generate a username
           isVerified: true,
           profilePicture: picture,
+          passwordHash: '', // No password for OAuth users
           accounts: {
             create: {
               provider: 'google',

@@ -55,7 +55,7 @@ export default function Login() {
     try {
       const result = await loginWithGoogle(response.credential);
       console.log('Google login successful:', result);
-      router.push('/');
+      router.push('./home');
     } catch (err) {
       setError(err.message || 'Google login failed');
     } finally {
@@ -75,7 +75,7 @@ export default function Login() {
     try {
       const res = await loginUser(form.username, form.password);      
       console.log('Login successful:', res);
-      router.push('/');
+      router.push('/home');
     } catch (err) {
       setError(err.message || 'Login failed');
     } finally {
@@ -200,13 +200,6 @@ export default function Login() {
                 className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
               >
                 Create new account
-              </button>
-              
-              <button
-                onClick={() => router.push('/verify-otp')}
-                className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-              >
-                Verify Account
               </button>
             </div>
           </div>
