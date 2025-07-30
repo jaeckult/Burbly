@@ -24,6 +24,7 @@ export async function loginUser(username, password) {
 
 // Google OAuth login
 export async function loginWithGoogle(idToken) {
+  console.log("Logging in with Google token:", idToken);
   const res = await fetch(`${API_BASE_URL}/api/auth/google`, {
     method: 'POST',
     credentials: 'include',

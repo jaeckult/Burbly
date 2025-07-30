@@ -7,6 +7,8 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // POST /api/auth/google
 async function googleAuth(req, res) {
+  console.log("endpoint hit");
+  
   const { idToken } = req.body;
   if (!idToken) return res.status(400).json({ error: 'No ID token provided' });
 
