@@ -15,6 +15,7 @@ signupRouter.post('/', async (req, res) => {
 
   const { username, email, password } = req.body;
   console.log("you are here");
+  console.log("signup request body:", req.body);
   
 
   if (!username  || !email || !password) {

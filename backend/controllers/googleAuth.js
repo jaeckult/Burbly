@@ -24,12 +24,14 @@ async function googleAuth(req, res) {
     // Find or create user
     let user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
+      console.log("Creating new user");
       user = await prisma.user.create({
         data: {
           email,
           username: email, // or generate a username
           isVerified: true,
           profilePicture: picture,
+          passwordHash: '', // No password for OAuth users
           accounts: {
             create: {
               provider: 'google',
