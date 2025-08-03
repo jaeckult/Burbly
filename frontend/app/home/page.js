@@ -48,6 +48,11 @@ function Places() {
           ticketmaster
         </span>
       </button>
+      <button onClick={() => window.location.href = '/predictHQ'}>
+  <span style={{ fontSize: "1.2rem", fontWeight: "500" }}>
+    predictHQ
+  </span>
+</button>
       {loading ? (
         <p>Loading...</p>
       ) : (

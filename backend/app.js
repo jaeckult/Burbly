@@ -29,6 +29,7 @@ const signupRouter     = require('./controllers/signup');
 const verifyOtpRouter  = require('./controllers/verifyOtp');
 const googleAuth       = require('./controllers/googleAuth');
 const ticketmasterRouter = require('./controllers/ticketMaster');
+const predictHQRouter = require('./controllers/predictHQ');
 
 app.use(getTokenFrom);
 
@@ -42,6 +43,9 @@ app.post('/api/auth/google', googleAuth);
 const googlePlacesRouter = require('./controllers/googlePlaces');
 app.use('/api', googlePlacesRouter);
 app.use('/api/ticketmaster', ticketmasterRouter);
+// const eventbriteRouter = require('./controllers/eventbrite');
+// app.use('/api/eventbrite/', eventbriteRouter);
+app.use('/api/predicthq', predictHQRouter);
 
 
 app.get('/', (req, res) => {
