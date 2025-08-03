@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 
-const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || 'http://localhost:3001';
+const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || 'http://localhost:3001'; 
 const SENDGRID_ORIGIN = process.env.SENDGRID_ORIGIN || 'https://api.sendgrid.com';
 app.use(express.json());
 
@@ -28,6 +28,7 @@ const loginRouter      = require('./controllers/login');
 const signupRouter     = require('./controllers/signup');
 const verifyOtpRouter  = require('./controllers/verifyOtp');
 const googleAuth       = require('./controllers/googleAuth');
+const ticketmasterRouter = require('./controllers/ticketMaster');
 
 app.use(getTokenFrom);
 
@@ -40,6 +41,7 @@ app.use('/api/me', require('./controllers/me'));
 app.post('/api/auth/google', googleAuth);
 const googlePlacesRouter = require('./controllers/googlePlaces');
 app.use('/api', googlePlacesRouter);
+app.use('/api/ticketmaster', ticketmasterRouter);
 
 
 app.get('/', (req, res) => {
