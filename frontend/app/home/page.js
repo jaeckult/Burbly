@@ -43,6 +43,11 @@ function Places() {
       <h2 style={{ fontSize: "1.5rem", fontWeight: "600", marginBottom: "1rem" }}>
         Nearby Photography Spots
       </h2>
+      <button onClick={() => window.location.href = '/ticketmaster'}>
+        <span style={{ fontSize: "1.2rem", fontWeight: "500" }}>
+          ticketmaster
+        </span>
+      </button>
       {loading ? (
         <p>Loading...</p>
       ) : (
