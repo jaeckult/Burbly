@@ -46,6 +46,7 @@ app.use('/api/ticketmaster', ticketmasterRouter);
 // const eventbriteRouter = require('./controllers/eventbrite');
 // app.use('/api/eventbrite/', eventbriteRouter);
 app.use('/api/predicthq', predictHQRouter);
+app.use('/api/customEvent', require('./controllers/customEvent'));
 
 
 app.get('/', (req, res) => {

@@ -24,6 +24,12 @@ model User {
 
   accounts       Account[]                                 // Linked OAuth accounts
   sessions       Session[]                                 // Sessions for token-based auth
+
+  EventAttendance EventAttendance[]
+
+  Event Event[]
+
+  EventBookmark EventBookmark[]
 }
 // model Profile{
 //   id String @id @default(cuid())
@@ -82,4 +88,66 @@ model VerificationToken {
 
   @@index([identifier])
   @@index([expires])
+}
+model Event {
+  id             String     @id @default(cuid())
+  title          String
+  description    String?
+  category       String?                                     // e.g., Music, Outdoors, Movie, Meetup
+  location       String                                      // Could be city, venue, or address
+  price          Float?                                      // Optional: for budget filtering
+  tags        Tag[]                                    // Array of tag strings (removed, use EventTag relation instead)
+  mood           String?                                     // Optional: “chill”, “exciting”, etc.
+  startTime      DateTime
+  endTime        DateTime?
+  imageUrl       String?                                     // Poster or thumbnail
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  // Relations
+  createdBy      User       @relation(fields: [createdById], references: [id])
+  createdById    String
+
+  attendees      EventAttendance[]
+  bookmarks      EventBookmark[]
+
+  EventTag EventTag[]
+}
+model EventAttendance {
+  id        String   @id @default(cuid())
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  eventId   String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  joinedAt  DateTime @default(now())
+
+  @@unique([eventId, userId])
+}
+model EventBookmark {
+  id        String   @id @default(cuid())
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  eventId   String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  bookmarkedAt DateTime @default(now())
+
+  @@unique([eventId, userId])
+}
+model Tag {
+  id     String   @id @default(cuid())
+  name   String   @unique
+
+  events EventTag[]
+
+  Event Event[]
+}
+
+model EventTag {
+  id      String   @id @default(cuid())
+  event   Event    @relation(fields: [eventId], references: [id])
+  eventId String
+  tag     Tag      @relation(fields: [tagId], references: [id])
+  tagId   String
+
+  @@unique([eventId, tagId])
 }
