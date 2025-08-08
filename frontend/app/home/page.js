@@ -20,22 +20,29 @@ function Places() {
   };
 
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        ({ coords: { latitude, longitude } }) => {
-          fetchPlaces(latitude, longitude);
-        },
-        (error) => {
-          console.warn("Geolocation error:", error.message);
-          // Fallback: London
-          fetchPlaces(51.5560, -0.2795);
-        }
-      );
-    } else {
-      console.warn("Geolocation not supported.");
-      fetchPlaces(51.5560, -0.2795);
-    }
-  }, []);
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      ({ coords: { latitude, longitude } }) => {
+        console.log("User location:", latitude, longitude);
+        fetchPlaces(latitude, longitude);
+      },
+      (error) => {
+        console.warn("Geolocation error:", error.message);
+        // Fallback location (London)
+        fetchPlaces(51.5560, -0.2795);
+      },
+      {
+        enableHighAccuracy: true, // Better precision
+        timeout: 10000,           // Give up after 10 seconds
+        maximumAge: 0              // Don’t use cached location
+      }
+    );
+  } else {
+    console.warn("Geolocation not supported by this browser.");
+    fetchPlaces(51.5560, -0.2795);
+  }
+}, []);
+
 
   return (
     <div style={{ padding: "1.5rem" }}>
@@ -62,6 +69,12 @@ function Places() {
           style={buttonStyle}
         >
           🔮 custom event
+        </button>
+        <button
+          onClick={() => window.location.href = '/front'}
+          style={buttonStyle}
+        >
+          🔮 front
         </button>
       </div>
 
