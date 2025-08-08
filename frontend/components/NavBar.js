@@ -1,41 +1,44 @@
 "use client";
 import { useState } from "react";
-import { FaSearch } from "react-icons/fa";
 
 export default function Navbar() {
-  const [activeTab, setActiveTab] = useState("Services");
+  const [activeTab, setActiveTab] = useState("For you");
 
   return (
-    <div className="border-b bg-white shadow-sm">
+    <div className="bg-gray-900/80 backdrop-blur-md border-b border-white/10 shadow-sm">
       <div className="flex items-center justify-between px-6 py-4">
+        
         {/* Logo */}
         <div className="flex items-center gap-2">
-          <img src="/burbly-logo.png" alt="Burbly" className="h-6" />
+          <img src="/burbly-logo.png" alt="Burbly" className="h-8" />
+          <span className="text-2xl font-bold text-white">Burbly</span>
         </div>
 
         {/* Nav Tabs */}
-        <div className="flex items-center gap-6 text-gray-700">
+        <div className="flex items-center gap-8">
           {[
-            { label: "Homes", icon: "🏠" },
-            { label: "Experiences", icon: "🎈", new: true },
-            { label: "Services", icon: "🛎️", new: true },
+            { label: "For you", icon: "🏠" },
+            { label: "Generate Plan", icon: "🎈", new: true },
+            { label: "Collection", icon: "🛎️", new: true },
           ].map((tab) => (
             <div
               key={tab.label}
-              className={`relative flex items-center gap-1 cursor-pointer ${
-                activeTab === tab.label ? "font-semibold text-black" : ""
+              className={`relative flex items-center gap-2 cursor-pointer transition-all duration-200 px-2 py-1 rounded ${
+                activeTab === tab.label
+                  ? "text-white font-semibold bg-blue-600"
+                  : "text-gray-300 hover:text-white hover:bg-gray-700/50"
               }`}
               onClick={() => setActiveTab(tab.label)}
             >
               <span className="text-lg">{tab.icon}</span>
-              <span>{tab.label}</span>
+              <span className="text-sm">{tab.label}</span>
               {tab.new && (
-                <span className="absolute -top-2 -right-3 bg-blue-500 text-white text-xs px-1 rounded">
+                <span className="absolute -top-2 -right-3 bg-blue-500 text-white text-xs px-1 rounded-full">
                   NEW
                 </span>
               )}
               {activeTab === tab.label && (
-                <div className="absolute bottom-[-8px] left-0 right-0 h-[2px] bg-black" />
+                <div className="absolute bottom-[-6px] left-0 right-0 h-[2px] bg-blue-400" />
               )}
             </div>
           ))}
@@ -43,44 +46,17 @@ export default function Navbar() {
 
         {/* Right Menu */}
         <div className="flex items-center gap-4">
-          <p className="text-sm font-medium text-gray-700">Switch to hosting</p>
-          <div className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center">
+          <p className="text-sm font-medium text-gray-200 hover:text-white">
+            Switch to hosting
+          </p>
+          <div className="w-8 h-8 bg-white/10 text-white rounded-full flex items-center justify-center backdrop-blur-sm">
             Y
           </div>
-          <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
-            <span className="text-xl">≡</span>
+          <div className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm">
+            <span className="text-white text-lg">≡</span>
           </div>
         </div>
-      </div>
 
-      {/* Search Box */}
-      <div className="flex items-center justify-center px-6 pb-4">
-        <div className="flex w-full max-w-3xl divide-x divide-gray-300 rounded-full border border-gray-300 shadow-sm">
-          {/* Where */}
-          <div className="flex-1 px-4 py-3">
-            <p className="text-sm font-semibold">Where</p>
-            <p className="text-sm text-gray-500">Search destinations</p>
-          </div>
-
-          {/* Date */}
-          <div className="flex-1 px-4 py-3">
-            <p className="text-sm font-semibold">Date</p>
-            <p className="text-sm text-gray-500">Add dates</p>
-          </div>
-
-          {/* Type of service */}
-          <div className="flex-1 px-4 py-3">
-            <p className="text-sm font-semibold">Type of service</p>
-            <p className="text-sm text-gray-500">Add service</p>
-          </div>
-
-          {/* Search Button */}
-          <div className="p-3 pr-4">
-            <div className="bg-rose-500 rounded-full p-3 text-white">
-              <FaSearch size={14} />
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );
