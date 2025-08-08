@@ -23,10 +23,22 @@ export async function getCustomEvent() {
 }
 
 export async function addCustomEvent(eventData) {
+  // Get the JWT token from localStorage
+  const token = localStorage.getItem('authToken');
+  
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+  
+  // Add Authorization header if token exists
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
   const res = await fetch(`${API_BASE_URL}/api/customEvent`, {
     method: 'POST',
     credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
+    headers,
     body: JSON.stringify(eventData),
   })
 

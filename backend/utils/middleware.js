@@ -34,11 +34,21 @@ const identifyUser = async (req, res, next) => {
     return res.status(401).json({ error: 'Unauthorized - No token provided' });
   }
   
-  
+  console.log('Token received:', token.substring(0, 20) + '...'); // Log first 20 chars for debugging
 
   try {
     const decoded = jwt.verify(token, process.env.SECRET);
-    const userId = decoded.id; 
+    console.log('Decoded token:', decoded); // Debug log
+    
+    // Handle both token structures: {id, username} and {userId, email}
+    const userId = decoded.id || decoded.userId; 
+
+    if (!userId) {
+      console.log('No userId found in token. Available fields:', Object.keys(decoded));
+      return res.status(401).json({ error: 'Unauthorized - Invalid token structure' });
+    }
+
+    console.log('Looking for user with ID:', userId);
 
     const user = await prisma.user.findUnique({
       where: { id: userId },

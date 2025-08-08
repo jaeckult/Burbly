@@ -3,6 +3,7 @@ const customEventRouter = express.Router();
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const { identifyUser } = require('../utils/middleware');
+
 // GET /events — fetch all events including their tags
 customEventRouter.get('/', async (req, res) => {
     
@@ -43,7 +44,7 @@ customEventRouter.get('/', async (req, res) => {
 });
 
 // POST /events — create a new event and connect or create tags
-customEventRouter.post('/', async (req, res) => {
+customEventRouter.post('/', identifyUser, async (req, res) => {
   try {
     const {
       title,
@@ -55,8 +56,7 @@ customEventRouter.post('/', async (req, res) => {
       mood,
       startTime,
       endTime,
-      imageUrl,
-      createdById
+      imageUrl
     } = req.body;
 
     const newEvent = await prisma.event.create({
@@ -71,7 +71,7 @@ customEventRouter.post('/', async (req, res) => {
         endTime: endTime ? new Date(endTime) : null,
         imageUrl,
         createdBy: {
-          connect: { id: createdById }
+          connect: { id: req.user.id }
         },
         EventTag: {
           create: tags.map(tagName => ({
